@@ -1,0 +1,11 @@
+development:
+  driver: postgres
+  open: user=nln dbname=new_left_news_development sslmode=disable
+
+test:
+  driver: postgres
+  open: user=nln dbname=new_left_news_test sslmode=disable
+
+production:
+  driver: postgres
+  open: $dbstring

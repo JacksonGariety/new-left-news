@@ -1,0 +1,49 @@
+{{define "body"}}
+<h3>Signup</h3>
+<form action="/signup" method="POST">
+  <table>
+    <tbody>
+      <tr>
+        <td> Email: </td>
+        <td> <input type="email" name="email" value="{{ .email }}" /> </td>
+        <td class="error">
+          {{ with .errors.email }}
+          <span> ({{ . }})</span>
+          {{ end }}
+        </td>
+      </tr>
+      <tr>
+        <td> Username: </td>
+        <td> <input type="text" name="username" value="{{ .username }}" /> </td>
+        <td class="error">
+          {{ with .errors.username }}
+          <span> ({{ . }})</span>
+          {{ end }}
+        </td>
+      </tr>
+      <tr>
+        <td> Password: </td>
+        <td> <input type="password" name="password" value="{{ .password }}" /> </td>
+        <td class="error">
+          {{ with .errors.password }}
+          <span> ({{ . }})</span>
+          {{ end }}
+        </td>
+      </tr>
+      <tr>
+        <td> Confirm: </td>
+        <td>
+          <input type="password" name="password_confirmation" value="{{ .password_confirmation }}" />
+        </td>
+        <td class="error">
+          {{ with .errors.password_confirmation }}
+          <span> ({{ . }})</span>
+          {{ end }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <input type="submit" value="Signup" />
+</form>
+{{end}}

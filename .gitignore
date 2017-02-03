@@ -1,0 +1,4 @@
+vendor/*
+!vendor/app
+new-left-news
+tmp

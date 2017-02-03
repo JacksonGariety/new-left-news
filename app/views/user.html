@@ -1,0 +1,11 @@
+{{ define "body" }}
+<h3>{{ .username }}</h3>
+
+{{ if (eq .username .authorized_username) }}
+This is your profile.
+{{ end }}
+{{ if .admin }}
+You are an admin.
+{{ end }}
+
+{{ end }}

@@ -1,0 +1,34 @@
+{{ define "layout" }}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>New Left News</title>
+    <link rel="stylesheet" type="text/css" href="/static/index.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/"><span class="logo">&#9774;</span></a>
+        <a href="/"><h1>New Left News</h1></a>
+        <a href="/newest">new</a>
+        <span class="right">
+          {{ if .authorized }}
+            <a href="{{.userpath}}">{{.current_user.Name}}</a> |
+            <a href="/logout">logout</a>
+          {{ else }}
+            <a href="/login">login</a> |
+            <a href="/signup">signup</a>
+          {{ end }}
+        </span>
+      </nav>
+    </header>
+    <main>{{ template "body" .}}</main>
+    <footer>
+      That's it!
+    </footer>
+  </body>
+</html>
+
+{{ end }}
