@@ -1,7 +1,7 @@
 {{define "body"}}
   <ol>
   {{ range $post := .posts }}
-    <li><a href="{{ $post.Url }}">{{ $post.Title }}</a></li>
+    <a href="{{ $post.Url }}"><li>{{ $post.Title }}</li></a>
   {{ end }}
   </ol>
 {{end}}

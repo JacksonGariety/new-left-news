@@ -9,6 +9,7 @@ import (
 
 	c "github.com/JacksonGariety/new-left-news/app/controllers"
 	m "github.com/JacksonGariety/new-left-news/app/middleware"
+	"github.com/JacksonGariety/new-left-news/app/utils"
 )
 
 func NewRouter() http.Handler {
@@ -21,7 +22,9 @@ func NewRouter() http.Handler {
 		m.Authenticate,
 	)
 
+	mux.NotFoundFunc(utils.NotFound)
 	mux.Get("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	mux.Get("/favicon.ico", http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "static/favicon.ico") }))
 	mux.Get("/", chain.ThenFunc(c.Index))
 	mux.Get("/newest", chain.ThenFunc(c.Newest))
 	mux.Get("/login", chain.Append(m.Retain).ThenFunc(c.LoginShow))
@@ -31,6 +34,8 @@ func NewRouter() http.Handler {
 	mux.Post("/signup", chain.Append(m.Retain).ThenFunc(c.SignupPost))
 	mux.Get("/user/:name", chain.ThenFunc(c.UserShow))
 	mux.Post("/user/:name", chain.ThenFunc(c.UserShow))
+	mux.Get("/submit", chain.ThenFunc(c.NewPost))
+	mux.Post("/submit", chain.ThenFunc(c.CreatePost))
 
 	return mux
 }

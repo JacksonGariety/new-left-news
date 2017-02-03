@@ -37,22 +37,33 @@ a:link {
 
 nav {
     color: black;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0.00,rgba(170,95,255,.75)),
-        color-stop(0.18,rgba(170,95,255,.75)),
-        color-stop(0.18,rgba(100,195,255,.75)),
-        color-stop(0.33,rgba(100,195,255,.75)),
-        color-stop(0.33,rgba(100,230,105,.75)),
-        color-stop(0.50,rgba(100,230,105,.75)),
-        color-stop(0.50,rgba(255,210,0,.75)),
-        color-stop(0.66,rgba(255,210,0,.75)),
-        color-stop(0.66,rgba(255,160,0,.75)),
-        color-stop(0.83,rgba(255,160,0,.75)),
-        color-stop(0.83,rgba(237,55,55,.75)),
-        color-stop(1.00,rgba(237,55,55,.75))
+    background-image: -webkit-linear-gradient(bottom,
+        rgba(170,95,255,1) 0%,
+        rgba(170,95,255,1) 18%,
+        rgba(100,195,255,1) 18%,
+        rgba(100,195,255,1) 33%,
+        rgba(100,230,105,1) 33%,
+        rgba(100,230,105,1) 50%,
+        rgba(255,210,0,1) 50%,
+        rgba(255,210,0,1) 66%,
+        rgba(255,160,0,1) 66%,
+        rgba(255,160,0,1) 83%,
+        rgba(237,55,55,1) 83%,
+        rgba(237,55,55,1) 100%
+    );
+    background-image: -moz-linear-gradient(bottom,
+        rgba(170,95,255,1) 0%,
+        rgba(170,95,255,1) 18%,
+        rgba(100,195,255,1) 18%,
+        rgba(100,195,255,1) 33%,
+        rgba(100,230,105,1) 33%,
+        rgba(100,230,105,1) 50%,
+        rgba(255,210,0,1) 50%,
+        rgba(255,210,0,1) 66%,
+        rgba(255,160,0,1) 66%,
+        rgba(255,160,0,1) 83%,
+        rgba(237,55,55,1) 83%,
+        rgba(237,55,55,1) 100%
     );
     padding: 2px;
     line-height: 1.4em;
@@ -72,7 +83,6 @@ nav .logo {
 }
 
 nav h1 {
-    height: 1.4em;
     font-size: 1em;
     color: #000;
     margin: 0;
@@ -88,6 +98,9 @@ main {
 ol {
     margin: 0;
     padding-left: 1em;
+}
+
+ol li {
 }
 
 footer {

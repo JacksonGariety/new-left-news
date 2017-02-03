@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 type Props map[string]interface{}
@@ -21,6 +22,15 @@ func (props Props) ValidatePresence(field string) bool {
 		}
 	}
 	return true
+}
+
+func StripSpaces(str string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			return -1
+		}
+		return r
+	}, str)
 }
 
 func (props Props) ValidateNoSpace(field string) bool {

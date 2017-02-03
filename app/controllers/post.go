@@ -24,3 +24,27 @@ func Newest(w http.ResponseWriter, r *http.Request) {
 		"posts": posts,
 	})
 }
+
+func NewPost(w http.ResponseWriter, r *http.Request) {
+	utils.Render(w, r, "submit.html", &utils.Props{})
+}
+
+func CreatePost(w http.ResponseWriter, r *http.Request) {
+	form := utils.Props{
+		"errors":   make(map[string]string),
+		"username": r.FormValue("username"),
+		"password": r.FormValue("password"),
+	}
+
+	if validateSubmitForm(form) == false {
+		NewPost(w, r)
+	} else {
+
+	}
+}
+
+// Validations
+
+func validateSubmitForm(form utils.Props) bool {
+	return false
+}

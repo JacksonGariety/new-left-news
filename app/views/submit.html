@@ -1,0 +1,29 @@
+{{define "body"}}
+<h3>Submit</h3>
+<form action="/submit" method="POST">
+  <table>
+    <tbody>
+      <tr>
+        <td> title: </td>
+        <td> <input type="text" name="title" value="{{ .title }}" /> </td>
+        <td class="error">
+          {{ with .errors.title }}
+          <span> ({{ . }})</span>
+          {{ end }}
+        </td>
+      </tr>
+      <tr>
+        <td> url: </td>
+        <td> <input type="text" name="title" value="{{ .title }}" /> </td>
+        <td class="error">
+          {{ with .errors.title }}
+          <span> ({{ . }})</span>
+          {{ end }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <input type="submit" value="Submit" />
+</form>
+{{end}}

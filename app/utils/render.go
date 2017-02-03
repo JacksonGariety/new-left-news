@@ -35,7 +35,7 @@ func Forbidden(w http.ResponseWriter, r *http.Request) {
 
 func NotFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, "404 not found")
+	Render(w, r, "404.html", &Props{})
 }
 
 func BadRequest(w http.ResponseWriter, r *http.Request) {
