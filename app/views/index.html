@@ -1,9 +1,15 @@
 {{define "body"}}
   <ol>
-  {{ range $post := .posts }}
+    {{ range $post := .posts }}
     <li>
       <a href="{{ $post.Url }}">{{ $post.Title }}</a><br/>
-      <span class="small"><a href="/post/{{ $post.ID }}/delete">delete</a></span>
+      <span class="small">
+        <span>posted by {{ $post.User.Name }}</span>
+        {{ if (eq $post.User.Name $.authorized_username) }}
+          <span>| </span>
+          <a href="/post/{{ $post.ID }}/delete">delete</a>
+        {{ end }}
+      </span>
     </li>
   {{ end }}
   </ol>

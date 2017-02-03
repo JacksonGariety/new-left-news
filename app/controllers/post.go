@@ -10,16 +10,25 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	posts := new(models.Posts)
-	utils.DB.Select("id, title, url, user_id").Find(posts)
+	posts := models.Posts{}
+	utils.DB.Select("id, title, url, user_id").Find(&posts)
+
+	for i, post := range posts {
+		utils.DB.Model(&post).Related(&posts[i].User)
+	}
+
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
 }
 
 func Newest(w http.ResponseWriter, r *http.Request) {
-	posts := new(models.Posts)
-	utils.DB.Select("id, title, url, user_id").Find(posts)
+	posts := models.Posts{}
+	utils.DB.Select("id, title, url, user_id").Find(&posts)
+
+	for i, post := range posts {
+		utils.DB.Model(&post).Related(&posts[i].User)
+	}
 
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
@@ -40,9 +49,11 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	if validateSubmitForm(form) == false {
 		utils.Render(w, r, "submit.html", &form)
 	} else {
+		current_user := (*r.Context().Value("data").(*utils.Props))["current_user"]
 		post := models.Post{
 			Title: form["title"].(string),
 			Url: form["url"].(string),
+			UserID: current_user.(models.User).ID,
 		}
 		utils.DB.NewRecord(&post)
 		utils.DB.Create(&post)

@@ -7,8 +7,10 @@ import (
 
 type Post struct {
 	gorm.Model
-	Title string
-	Url   string
+	Title  string
+	Url    string
+	UserID uint
+	User   User `gorm:"ForeignKey:UserID"`
 }
 
 type Posts []Post
