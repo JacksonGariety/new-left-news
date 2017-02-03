@@ -11,11 +11,11 @@ import (
 
 // Actions
 
-func LoginShow(w http.ResponseWriter, r *http.Request) {
+func NewSession(w http.ResponseWriter, r *http.Request) {
 	utils.Render(w, r, "login.html", &utils.Props{})
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func CreateSession(w http.ResponseWriter, r *http.Request) {
 	form := utils.Props{
 		"errors":   make(map[string]string),
 		"username": r.FormValue("username"),
@@ -32,7 +32,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LogoutShow(w http.ResponseWriter, r *http.Request) {
+func DestroySession(w http.ResponseWriter, r *http.Request) {
 	deleteCookie := http.Cookie{Name: "Auth", Value: "none", Expires: time.Now()}
 	http.SetCookie(w, &deleteCookie)
 	http.Redirect(w, r, "/", 307)

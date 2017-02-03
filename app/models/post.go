@@ -9,7 +9,6 @@ type Post struct {
 	gorm.Model
 	Title string
 	Url   string
-	Body  string
 }
 
 type Posts []Post

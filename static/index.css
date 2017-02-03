@@ -100,7 +100,15 @@ ol {
     padding-left: 1em;
 }
 
-ol li {
+.small a {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 7pt;
+    color: #828282;
+}
+
+input[type="text"], input[type="password"] {
+    border: 1px solid #BBB !important;
+    padding: 1px !important;
 }
 
 footer {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"unicode"
+	"net/url"
 )
 
 type Props map[string]interface{}
@@ -23,6 +24,16 @@ func (props Props) ValidatePresence(field string) bool {
 	}
 	return true
 }
+
+func (props Props) ValidateUrl(field string) bool {
+	_, err := url.ParseRequestURI(props[field].(string))
+	if err != nil {
+		props.SetError(field, fmt.Sprintf("%s must be a valid URL", field))
+		return false
+	}
+	return true
+}
+
 
 func StripSpaces(str string) string {
 	return strings.Map(func(r rune) rune {

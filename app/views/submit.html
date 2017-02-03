@@ -1,5 +1,5 @@
 {{define "body"}}
-<h3>Submit</h3>
+<h3>submit</h3>
 <form action="/submit" method="POST">
   <table>
     <tbody>
@@ -14,9 +14,9 @@
       </tr>
       <tr>
         <td> url: </td>
-        <td> <input type="text" name="title" value="{{ .title }}" /> </td>
+        <td> <input type="text" name="url" value="{{ .url }}" /> </td>
         <td class="error">
-          {{ with .errors.title }}
+          {{ with .errors.url }}
           <span> ({{ . }})</span>
           {{ end }}
         </td>

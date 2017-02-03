@@ -1,7 +1,10 @@
 {{define "body"}}
   <ol>
   {{ range $post := .posts }}
-    <a href="{{ $post.Url }}"><li>{{ $post.Title }}</li></a>
+    <li>
+      <a href="{{ $post.Url }}">{{ $post.Title }}</a><br/>
+      <span class="small"><a href="/post/{{ $post.ID }}/delete">delete</a></span>
+    </li>
   {{ end }}
   </ol>
 {{end}}

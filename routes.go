@@ -27,15 +27,17 @@ func NewRouter() http.Handler {
 	mux.Get("/favicon.ico", http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "static/favicon.ico") }))
 	mux.Get("/", chain.ThenFunc(c.Index))
 	mux.Get("/newest", chain.ThenFunc(c.Newest))
-	mux.Get("/login", chain.Append(m.Retain).ThenFunc(c.LoginShow))
-	mux.Post("/login", chain.Append(m.Retain).ThenFunc(c.Login))
-	mux.Get("/logout", chain.ThenFunc(c.LogoutShow))
-	mux.Get("/signup", chain.Append(m.Retain).ThenFunc(c.SignupShow))
-	mux.Post("/signup", chain.Append(m.Retain).ThenFunc(c.SignupPost))
+	mux.Post("/newest", chain.ThenFunc(c.Newest))
+	mux.Get("/login", chain.Append(m.Retain).ThenFunc(c.NewSession))
+	mux.Post("/login", chain.Append(m.Retain).ThenFunc(c.CreateSession))
+	mux.Get("/logout", chain.ThenFunc(c.DestroySession))
+	mux.Get("/signup", chain.Append(m.Retain).ThenFunc(c.NewUser))
+	mux.Post("/signup", chain.Append(m.Retain).ThenFunc(c.CreateUser))
 	mux.Get("/user/:name", chain.ThenFunc(c.UserShow))
 	mux.Post("/user/:name", chain.ThenFunc(c.UserShow))
 	mux.Get("/submit", chain.ThenFunc(c.NewPost))
 	mux.Post("/submit", chain.ThenFunc(c.CreatePost))
+	mux.Get("/post/:id/delete", chain.ThenFunc(c.DestroyPost))
 
 	return mux
 }
