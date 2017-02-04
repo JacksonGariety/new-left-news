@@ -11,12 +11,8 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Find(&posts)
-
-	for i, post := range posts {
-		utils.DB.Model(&post).Related(&posts[i].User)
-	}
-
+	utils.DB.Select("id, title, url, user_id").Limit(30).Find(&posts)
+	posts.FetchUsers()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
@@ -24,12 +20,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Newest(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Find(&posts)
-
-	for i, post := range posts {
-		utils.DB.Model(&post).Related(&posts[i].User)
-	}
-
+	utils.DB.Select("id, title, url, user_id").Limit(30).Find(&posts)
+	posts.FetchUsers()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
@@ -65,7 +57,9 @@ func DestroyPost(w http.ResponseWriter, r *http.Request) {
 	post := models.Post{}
 	id, _ := strconv.Atoi(bone.GetValue(r, "id"))
 	utils.DB.First(&post, id)
-	utils.DB.Unscoped().Delete(&post)
+	utils.DB.Model(&post).Related(&post.User)
+	authorized_username := (*r.Context().Value("data").(*utils.Props))["authorized_username"]
+	post.DeleteWithUser(authorized_username.(string))
 	http.Redirect(w, r, "/", 307);
 }
 
