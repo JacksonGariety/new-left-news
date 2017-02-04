@@ -14,12 +14,13 @@ import (
 var sessionHash = os.Getenv("session_hash")
 
 func Authenticate(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 		var ctx context.Context
 		claims, ok := isAuthentic(r)
 		if ok {
 			user := models.User{Name: claims.Username}
 			utils.DB.Select("name, admin, id").Where(&user).First(&user)
+			user.FetchKarma()
 			ctx = context.WithValue(r.Context(), "data", &utils.Props{
 				"authorized":          ok,
 				"authorized_username": claims.Username,
@@ -42,7 +43,7 @@ func Authenticate(next http.Handler) http.Handler {
 
 // unauthorized users are redirected to signup
 func Protect(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 		data := r.Context().Value("data").(*utils.Props)
 		if (*data)["authorized"].(bool) {
 			next.ServeHTTP(w, r)
@@ -54,7 +55,7 @@ func Protect(next http.Handler) http.Handler {
 
 // non-admin users recieve 403
 func Forbid(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 		data := r.Context().Value("data").(*utils.Props)
 		if (*data)["authorized"].(bool) && (*data)["admin"].(bool) {
 			next.ServeHTTP(w, r)
@@ -66,7 +67,7 @@ func Forbid(next http.Handler) http.Handler {
 
 // authorized users are redirected to home
 func Retain(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 		data := r.Context().Value("data").(*utils.Props)
 		if (*data)["authorized"].(bool) {
 			http.Redirect(w, r, "/", 307)

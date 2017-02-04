@@ -8,11 +8,14 @@ import (
 
 type Post struct {
 	gorm.Model
-	Title  string
-	Url    string
-	UserID uint
-	Points Points
-	User   User `gorm:"ForeignKey:UserID"`
+	Title        string
+	Url          string
+	Content      string
+	UserID       uint
+	ParentPostID uint
+	Points       Points
+	Posts        Posts `gorm:"ForeignKey":ParentPostID`
+	User         User `gorm:"ForeignKey:UserID"`
 }
 
 type Posts []Post
@@ -45,6 +48,11 @@ func (post *Post) UpvoteWithUser(current_user User) {
 		utils.DB.NewRecord(&point)
 		utils.DB.Create(&point)
 	}
+}
+
+func (post *Post) FetchComments() {
+	utils.DB.Select("*").Where("parent_post_id = ?", post.ID).Find(&post.Posts)
+	post.Posts.FetchUsers()
 }
 
 func (posts Posts) FetchPoints() {

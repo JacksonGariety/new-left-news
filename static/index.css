@@ -113,7 +113,7 @@ main {
 
 ol {
     margin: 0;
-    padding-left: 1em;
+    padding-left: 1.3em;
 }
 
 .small a, .small span {
@@ -152,4 +152,12 @@ li table, li td, li tr, li thead, li tbody {
 
 .invisible {
     opacity: 0;
+}
+
+button, input {
+    font-family: monospace;
+}
+
+.comment {
+    font-size: .9em;
 }

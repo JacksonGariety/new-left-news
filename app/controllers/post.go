@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"github.com/go-zoo/bone"
@@ -11,7 +12,7 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Limit(30).Find(&posts)
+	utils.DB.Select("id, title, url, user_id").Where("content = ?", "").Limit(30).Find(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
@@ -21,12 +22,27 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Newest(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Limit(30).Find(&posts)
+	utils.DB.Select("id, title, url, user_id").Where("content = ?", "").Limit(30).Find(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
+}
+
+func ShowPost(w http.ResponseWriter, r *http.Request) {
+	post := models.Post{}
+	id, _ := strconv.Atoi(bone.GetValue(r, "id"))
+	if utils.DB.First(&post, id).RecordNotFound() {
+		utils.NotFound(w, r)
+	} else {
+		utils.DB.Model(&post).Related(&post.User)
+		utils.DB.Model(&post).Related(&post.Points)
+		post.FetchComments()
+		utils.Render(w, r, "show_post.html", &utils.Props{
+			"post": &post,
+		})
+	}
 }
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
@@ -60,9 +76,48 @@ func DestroyPost(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(bone.GetValue(r, "id"))
 	utils.DB.First(&post, id)
 	utils.DB.Model(&post).Related(&post.User)
+
+	returnURL := "/"
+	if post.ParentPostID != 0 {
+		returnURL = fmt.Sprintf("/post/%d", post.ParentPostID)
+	}
+
 	current_user := (*r.Context().Value("data").(*utils.Props))["current_user"]
 	post.DeleteWithUser(current_user.(models.User))
-	http.Redirect(w, r, "/", 307);
+	http.Redirect(w, r, returnURL, 307);
+}
+
+func CreateComment(w http.ResponseWriter, r *http.Request) {
+	form := utils.Props{
+		"errors":   make(map[string]string),
+		"content": r.FormValue("content"),
+	}
+
+	post := models.Post{}
+	id, _ := strconv.Atoi(bone.GetValue(r, "id"))
+	utils.DB.First(&post, id)
+	utils.DB.Model(&post).Related(&post.User)
+	utils.DB.Model(&post).Related(&post.Points)
+
+	if validateCommentForm(form) == false {
+		utils.Render(w, r, "show_post.html", &utils.Props{
+			"post": &post,
+			"errors": form["errors"],
+			"content": form["content"],
+		})
+	} else {
+		id, _ := strconv.Atoi(bone.GetValue(r, "id"))
+		current_user := (*r.Context().Value("data").(*utils.Props))["current_user"]
+		comment := models.Post{
+			Content: form["content"].(string),
+			UserID: current_user.(models.User).ID,
+			ParentPostID: uint(id),
+		}
+		utils.DB.NewRecord(&comment)
+		utils.DB.Create(&comment)
+		post.FetchComments()
+		http.Redirect(w, r, fmt.Sprintf("/post/%d", post.ID), 307)
+	}
 }
 
 // Validations
@@ -72,5 +127,10 @@ func validateSubmitForm(form utils.Props) bool {
 	if form.ValidatePresence("url") {
 		form.ValidateUrl("url")
 	}
+	return form.IsValid()
+}
+
+func validateCommentForm(form utils.Props) bool {
+	form.ValidatePresence("content")
 	return form.IsValid()
 }
