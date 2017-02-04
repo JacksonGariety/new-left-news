@@ -137,3 +137,19 @@ footer {
     padding-bottom: 1em;
     padding-top: 1em;
 }
+
+li table, li td, li tr, li thead, li tbody {
+    margin-top: -1.3em;
+    padding: 0;
+}
+
+.vote a {
+    color: #828282;
+    padding-right: .3em;
+    padding-top: .15em;
+    font-size: .8em;
+}
+
+.invisible {
+    opacity: 0;
+}

@@ -38,6 +38,7 @@ func NewRouter() http.Handler {
 	mux.Get("/submit", chain.ThenFunc(c.NewPost))
 	mux.Post("/submit", chain.ThenFunc(c.CreatePost))
 	mux.Get("/post/:id/delete", chain.ThenFunc(c.DestroyPost))
+	mux.Get("/post/:id/upvote", chain.ThenFunc(c.UpvotePost))
 
 	return mux
 }

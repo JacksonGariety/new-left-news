@@ -5,14 +5,30 @@
   <ol>
     {{ range $post := .posts }}
       <li>
-        <a href="{{ $post.Url }}">{{ $post.Title }}</a><br/>
-        <span class="small">
-          <span>posted by <a href="/user/{{ $post.User.Name }}">{{ $post.User.Name }}</a></span>
-          {{ if ($post.CanDelete $.authorized_username) }}
-            <span>| </span>
-            <a onclick="return confirm('Are you sure you want to delete this post?')" href="/post/{{ $post.ID }}/delete">delete</a>
-          {{ end }}
-        </span>
+        <table>
+          <tr>
+            <td class="vote">
+              {{ if $.authorized }}
+                <a {{ if ($post.CanUpvote $.current_user) }} href="/post/{{ $post.ID }}/upvote" {{ else }} class="invisible" {{ end }}>▲</a>
+              {{ end }}
+            </td>
+            <td><a href="{{ $post.Url }}">{{ $post.Title }}</a></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <span class="small">
+                <span>{{ (len $post.Points) }} {{ if (eq (len $post.Points) 1)}} point {{ else }} points {{ end }} by <a href="/user/{{ $post.User.Name }}">{{ $post.User.Name }}</a></span>
+                {{ if $.authorized }}
+                  {{ if ($post.CanDelete $.current_user) }}
+                    <span>| </span>
+                    <a onclick="return confirm('Are you sure you want to delete this post?')" href="/post/{{ $post.ID }}/delete">delete</a>
+                  {{ end }}
+                {{ end }}
+              </span>
+            </td>
+          </tr>
+        </table>
       </li>
     {{ end }}
   </ol>

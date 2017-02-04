@@ -13,6 +13,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
 	utils.DB.Select("id, title, url, user_id").Limit(30).Find(&posts)
 	posts.FetchUsers()
+	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
@@ -22,6 +23,7 @@ func Newest(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
 	utils.DB.Select("id, title, url, user_id").Limit(30).Find(&posts)
 	posts.FetchUsers()
+	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
@@ -58,8 +60,8 @@ func DestroyPost(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(bone.GetValue(r, "id"))
 	utils.DB.First(&post, id)
 	utils.DB.Model(&post).Related(&post.User)
-	authorized_username := (*r.Context().Value("data").(*utils.Props))["authorized_username"]
-	post.DeleteWithUser(authorized_username.(string))
+	current_user := (*r.Context().Value("data").(*utils.Props))["current_user"]
+	post.DeleteWithUser(current_user.(models.User))
 	http.Redirect(w, r, "/", 307);
 }
 

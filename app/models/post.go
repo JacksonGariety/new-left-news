@@ -11,18 +11,45 @@ type Post struct {
 	Title  string
 	Url    string
 	UserID uint
+	Points Points
 	User   User `gorm:"ForeignKey:UserID"`
 }
 
 type Posts []Post
 
-func (post *Post) CanDelete(authorized_username string) bool {
-	return authorized_username == post.User.Name
+func (post *Post) CanDelete(current_user User) bool {
+	return current_user.Name == post.User.Name
 }
 
-func (post *Post) DeleteWithUser(authorized_username string) {
-	if post.CanDelete(authorized_username) {
+func (post *Post) CanUpvote(current_user User) bool {
+	point := Point{
+		UserID: current_user.ID,
+		PostID: post.ID,
+	}
+	return current_user.Name == post.User.Name &&
+		utils.DB.Where(&point).First(&point).RecordNotFound()
+}
+
+func (post *Post) DeleteWithUser(current_user User) {
+	if post.CanDelete(current_user) {
 		utils.DB.Unscoped().Delete(&post)
+	}
+}
+
+func (post *Post) UpvoteWithUser(current_user User) {
+	if post.CanUpvote(current_user) {
+		point := Point{
+			UserID: current_user.ID,
+			PostID: post.ID,
+		}
+		utils.DB.NewRecord(&point)
+		utils.DB.Create(&point)
+	}
+}
+
+func (posts Posts) FetchPoints() {
+	for i, post := range posts {
+		utils.DB.Model(&post).Related(&posts[i].Points)
 	}
 }
 
