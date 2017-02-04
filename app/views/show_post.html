@@ -4,7 +4,7 @@
 <table>
   <tbody>
     <tr>
-      <td>&nbsp;&nbsp;</td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
       <td>
         <form action="/post/{{ .post.ID }}/submit" method="POST">
           <textarea cols="50" rows="7" name="content">{{ .content }}</textarea>
@@ -22,36 +22,7 @@
 </table>
 <br/>
 {{ range $comment := .post.Posts }}
-  <table>
-    <tr>
-      <td class="vote">
-        {{ if $.authorized }}
-          <a {{ if ($comment.CanUpvote $.current_user) }} href="/post/{{ $comment.ID }}/upvote" {{ else }} class="invisible" {{ end }}>▲</a>
-        {{ end }}
-      </td>
-      <td>
-        <span class="small">
-          <a href="/user/{{ $comment.User.Name }}">{{ $comment.User.Name }}</a>
-          {{ if $.authorized }}
-            {{ if ($comment.CanDelete $.current_user) }}
-              <span>| </span>
-              <a onclick="return confirm('Are you sure you want to delete this post?')" href="/post/{{ $comment.ID }}/delete">delete</a>
-            {{ end }}
-          {{ end }}
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td class="comment">
-        {{ $comment.Content }}
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td><span class="small"><a href="/post/{{ $comment.ID }}/submit">reply</a></span></td>
-    </tr>
-  </table>
+  {{ template "comment" (dict "comment" $comment "authorized" $.authorized "can_upvote" ($comment.CanUpvote $.current_user) "can_delete" ($comment.CanDelete $.current_user) "current_user" $.current_user)}}
 {{ end }}
 
 {{ end }}

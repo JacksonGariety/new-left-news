@@ -38,7 +38,7 @@ func ShowPost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		utils.DB.Model(&post).Related(&post.User)
 		utils.DB.Model(&post).Related(&post.Points)
-		post.FetchComments()
+		post.Posts = post.GetComments()
 		utils.Render(w, r, "show_post.html", &utils.Props{
 			"post": &post,
 		})
@@ -98,6 +98,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	utils.DB.First(&post, id)
 	utils.DB.Model(&post).Related(&post.User)
 	utils.DB.Model(&post).Related(&post.Points)
+	post.Posts = post.GetComments()
 
 	if validateCommentForm(form) == false {
 		utils.Render(w, r, "show_post.html", &utils.Props{
@@ -115,7 +116,6 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		}
 		utils.DB.NewRecord(&comment)
 		utils.DB.Create(&comment)
-		post.FetchComments()
 		http.Redirect(w, r, fmt.Sprintf("/post/%d", post.ID), 307)
 	}
 }

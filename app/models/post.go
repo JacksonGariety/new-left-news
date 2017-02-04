@@ -50,9 +50,15 @@ func (post *Post) UpvoteWithUser(current_user User) {
 	}
 }
 
-func (post *Post) FetchComments() {
-	utils.DB.Select("*").Where("parent_post_id = ?", post.ID).Find(&post.Posts)
-	post.Posts.FetchUsers()
+func (post Post) GetComments() Posts {
+	comments := Posts{}
+	utils.DB.Select("*").Where("parent_post_id = ?", post.ID).Find(&comments)
+	comments.FetchPoints()
+	comments.FetchUsers()
+	for i, comment := range comments {
+		comments[i].Posts = comment.GetComments()
+	}
+	return comments
 }
 
 func (posts Posts) FetchPoints() {

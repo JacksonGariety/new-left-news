@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"github.com/go-zoo/bone"
@@ -14,7 +15,13 @@ func UpvotePost(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(bone.GetValue(r, "id"))
 	utils.DB.First(&post, id)
 	utils.DB.Model(&post).Related(&post.User)
+
+	returnURL := "/"
+	if post.ParentPostID != 0 {
+		returnURL = fmt.Sprintf("/post/%d", post.ParentPostID)
+	}
+
 	current_user := (*r.Context().Value("data").(*utils.Props))["current_user"]
 	post.UpvoteWithUser(current_user.(models.User))
-	http.Redirect(w, r, "/", 307);
+	http.Redirect(w, r, returnURL, 307);
 }
