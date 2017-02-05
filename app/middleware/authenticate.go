@@ -20,7 +20,6 @@ func Authenticate(next http.Handler) http.Handler {
 		if ok {
 			user := models.User{Name: claims.Username}
 			utils.DB.Select("name, admin, id").Where(&user).First(&user)
-			user.FetchKarma()
 			ctx = context.WithValue(r.Context(), "data", &utils.Props{
 				"authorized":          ok,
 				"authorized_username": claims.Username,

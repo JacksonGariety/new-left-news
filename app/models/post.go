@@ -42,6 +42,7 @@ func (post *Post) DeleteWithUser(current_user User) {
 func (post *Post) UpvoteWithUser(current_user User) {
 	if post.CanUpvote(current_user) {
 		point := Point{
+			Vote: 1,
 			UserID: current_user.ID,
 			PostID: post.ID,
 		}

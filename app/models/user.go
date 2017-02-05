@@ -15,7 +15,6 @@ type User struct {
 	PasswordHash string
 	Admin        bool
 	Posts        Posts
-	Karma        int
 }
 
 type Users []User
@@ -27,7 +26,7 @@ func (user *User) CreateFromPassword(password string) (*User, error) {
 	return user, c.Error
 }
 
-func (user *User) FetchKarma() {
+func (user User) Karma() int {
 	utils.DB.Model(&user).Related(&user.Posts)
 	count := 0
 	for i, post := range user.Posts {
@@ -36,7 +35,7 @@ func (user *User) FetchKarma() {
 			count += 1
 		}
 	}
-	user.Karma = count
+	return count
 }
 
 func (user *User) Userpath() string {

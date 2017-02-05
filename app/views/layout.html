@@ -20,7 +20,7 @@
         {{ end }}
         <span class="right">
           {{ if .authorized }}
-            <a href="{{.userpath}}">{{.current_user.Name}} ({{ .current_user.Karma }})</a>
+            <a href="{{.userpath}}">{{.current_user.Name}} ({{ (.current_user.Karma) }})</a>
             | <a href="/logout">logout</a>
           {{ else }}
             <a href="/login">login</a>

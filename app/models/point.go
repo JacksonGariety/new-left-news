@@ -9,6 +9,7 @@ type Point struct {
 	gorm.Model
 	UserID uint
 	PostID uint
+	Vote   int
 	User   User `gorm:"ForeignKey:UserID"`
 	Post   Post `gorm:"ForeignKey:PostID"`
 }

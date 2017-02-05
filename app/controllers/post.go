@@ -12,7 +12,7 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Where("content = ?", "").Limit(30).Find(&posts)
+	utils.DB.Raw("SELECT x.* FROM posts x JOIN (SELECT p.id, SUM(v.vote) AS points FROM posts p JOIN points v ON v.post_id = p.id GROUP BY p.id) y ON y.id = x.id ORDER BY (y.points - 1)/POW(((EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM x.created_at))/3600)+2, 1.5) DESC").Scan(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
@@ -22,7 +22,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Newest(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Where("content = ?", "").Limit(30).Find(&posts)
+	utils.DB.Select("id, title, url, user_id").Where("content = ?", "").Order("created_at DESC").Limit(30).Find(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
@@ -67,6 +67,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 		utils.DB.NewRecord(&post)
 		utils.DB.Create(&post)
+		post.UpvoteWithUser(current_user.(models.User))
 		http.Redirect(w, r, "/newest", 307);
 	}
 }
