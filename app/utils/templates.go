@@ -7,12 +7,14 @@ import (
 	"path/filepath"
 	"log"
 	"errors"
+	"time"
+  timeago "github.com/ararog/timeago"
 )
 
 var BasePath = os.Getenv("base_path")
 
 var funcMap = template.FuncMap{
-	"dict": func(values ...interface{}) (map[string]interface{}, error) {
+	"dict": func (values ...interface{}) (map[string]interface{}, error) {
 		if len(values)%2 != 0 {
 			return nil, errors.New("invalid dict call")
 		}
@@ -25,6 +27,10 @@ var funcMap = template.FuncMap{
 			dict[key] = values[i+1]
 		}
 		return dict, nil
+	},
+	"timeAgoInWords": func (date time.Time) string {
+		rel, _ := timeago.TimeAgoWithTime(time.Now().Local().Add(time.Hour * -8), date)
+		return rel
 	},
 }
 

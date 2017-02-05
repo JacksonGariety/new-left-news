@@ -22,7 +22,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Newest(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Select("id, title, url, user_id").Where("content = ?", "").Order("created_at DESC").Limit(30).Find(&posts)
+	utils.DB.Select("id, title, url, user_id, created_at").Where("content = ?", "").Order("created_at DESC").Limit(30).Find(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
