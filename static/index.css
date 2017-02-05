@@ -165,3 +165,24 @@ button, input {
 .indent table {
     margin-left: 2em;
 }
+
+@media only screen and (max-width: 800px) {
+    html { padding: 0; }
+
+    body {
+        width: 100%;
+        font-size: 1.3em;
+    }
+
+    .small a, .small span {
+        font-size: 10pt;
+    }
+
+    .right {
+        float: none;
+    }
+
+    .right::before {
+        content: "| ";
+    }
+}
