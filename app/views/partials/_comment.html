@@ -10,6 +10,7 @@
       <td>
         <span class="small">
           <a href="/user/{{ .comment.User.Name }}">{{ .comment.User.Name }}</a>
+          <span>{{ (timeAgoInWords .comment.CreatedAt)}}</span>
           {{ if .authorized }}
             {{ if .can_delete }}
               <span>| </span>

@@ -12,7 +12,7 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	posts := models.Posts{}
-	utils.DB.Raw("SELECT x.* FROM posts x JOIN (SELECT p.id, SUM(v.vote) AS points FROM posts p JOIN points v ON v.post_id = p.id GROUP BY p.id) y ON y.id = x.id ORDER BY (y.points - 1)/POW(((EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM x.created_at))/3600)+2, 1.5) DESC").Scan(&posts)
+	utils.DB.Raw("SELECT x.* FROM posts x JOIN (SELECT p.id, SUM(v.vote) AS points FROM posts p JOIN points v ON v.post_id = p.id GROUP BY p.id) y ON y.id = x.id WHERE x.parent_post_id = 0 ORDER BY (y.points - 1)/POW(((EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM x.created_at))/3600)+2, 1.5) DESC").Scan(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
 	utils.Render(w, r, "index.html", &utils.Props{
