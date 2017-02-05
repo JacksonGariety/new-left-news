@@ -22,4 +22,4 @@ test:
 
 run:
 	go build
-	env env=production port=80 session_hash=needed_hash base_path=$$GOPATH/src/github.com/JacksonGariety/new-left-news ./new-left-news
+	env env=production port=8002 session_hash=needed_hash base_path=$$GOPATH/src/github.com/JacksonGariety/new-left-news ./new-left-news

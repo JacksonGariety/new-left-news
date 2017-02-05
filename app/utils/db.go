@@ -9,8 +9,8 @@ import (
 var DB *gorm.DB
 
 func InitDB(dbstring string) {
-	if dbstring == "$dbstring" {
-	  dbstring = os.Getenv("dbstring")
+	if dbstring == "$dbstringnln" {
+	  dbstring = os.Getenv("dbstringnln")
 	}
 
 	var err error
