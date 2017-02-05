@@ -34,6 +34,7 @@ func Authenticate(next http.Handler) http.Handler {
 				"authorized_username": "",
 				"userpath":            "",
 				"admin":               false,
+				"current_user":        models.User{},
 			})
 		}
 

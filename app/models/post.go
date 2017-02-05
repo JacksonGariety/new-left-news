@@ -29,7 +29,7 @@ func (post *Post) CanUpvote(current_user User) bool {
 		UserID: current_user.ID,
 		PostID: post.ID,
 	}
-	return current_user.Name == post.User.Name &&
+	return current_user.Name != post.User.Name &&
 		utils.DB.Where(&point).First(&point).RecordNotFound()
 }
 

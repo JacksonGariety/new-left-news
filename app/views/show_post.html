@@ -4,7 +4,7 @@
 <table>
   <tbody>
     <tr>
-      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td>{{ if .authorized }}&nbsp;&nbsp;&nbsp;{{ end }}</td>
       <td>
         <form action="/post/{{ .post.ID }}/submit" method="POST">
           <textarea cols="50" rows="7" name="content">{{ .content }}</textarea>
