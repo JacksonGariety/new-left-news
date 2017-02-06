@@ -116,6 +116,10 @@ ol {
     padding-left: 1.3em;
 }
 
+ol li {
+    margin-bottom: .5em;
+}
+
 .small a, .small span {
     font-family: Verdana, Geneva, sans-serif;
     font-size: 7pt;
@@ -166,16 +170,20 @@ button, input {
     margin-left: 2em;
 }
 
-@media only screen and (max-width: 800px) {
+table {
+    border-collapse: collapse;
+}
+
+@media only screen and (max-width: 650px) {
     html { padding: 0; }
 
     body {
         width: 100%;
-        font-size: 1.3em;
+        font-size: 1.1em;
     }
 
     .small a, .small span {
-        font-size: 10pt;
+        font-size: 9pt;
     }
 
     .right {
