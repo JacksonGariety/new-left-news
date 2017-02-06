@@ -29,7 +29,7 @@ var funcMap = template.FuncMap{
 		return dict, nil
 	},
 	"timeAgoInWords": func (date time.Time) string {
-		rel, _ := timeago.TimeAgoWithTime(time.Now().Local().Add(time.Hour * -8), date)
+		rel, _ := timeago.TimeAgoWithTime(time.Now(), date)
 		return rel
 	},
 }

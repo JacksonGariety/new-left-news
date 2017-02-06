@@ -23,7 +23,7 @@
     <td>
       <span class="small">
         <span>{{ (len .post.Points) }} {{ if (eq (len .post.Points) 1)}} point {{ else }} points {{ end }} by <a href="/user/{{ .post.User.Name }}">{{ .post.User.Name }}</a></span>
-        <span>{{ (timeAgoInWords .post.CreatedAt)}}</span>
+        <span>{{ (timeAgoInWords .post.CreatedAt) }}</span>
         <span>| <a href="/post/{{ .post.ID }}">comments</a></span>
         {{ if .authorized }}
           {{ if .can_delete }}
