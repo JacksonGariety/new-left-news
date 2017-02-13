@@ -12,11 +12,14 @@ func ShowUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{Name: bone.GetValue(r, "name")}
 	if !utils.DB.Where(user).First(user).RecordNotFound() {
 		posts := &models.Posts{}
-		utils.DB.Where(posts).Find(posts)
+		utils.DB.Where("title != '' AND user_id = ?", user.ID).Find(&posts)
+		comments := &models.Posts{}
+		utils.DB.Where("title = '' AND user_id = ?", user.ID).Find(&comments)
 		utils.Render(w, r, "user.html", &utils.Props{
 			"username": user.Name,
 			"admin":    user.Admin,
 			"posts": posts,
+			"comments": comments,
 		})
 	} else {
 		utils.NotFound(w, r)
