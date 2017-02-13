@@ -51,13 +51,14 @@ func (post *Post) UpvoteWithUser(current_user User) {
 	}
 }
 
-func (post Post) GetComments() Posts {
+// recursively gets all comments including nested
+func (post Post) FetchAllComments() Posts {
 	comments := Posts{}
 	utils.DB.Select("*").Where("parent_post_id = ?", post.ID).Find(&comments)
 	comments.FetchPoints()
 	comments.FetchUsers()
 	for i, comment := range comments {
-		comments[i].Posts = comment.GetComments()
+		comments[i].Posts = comment.FetchAllComments()
 	}
 	return comments
 }
@@ -65,6 +66,15 @@ func (post Post) GetComments() Posts {
 func (posts Posts) FetchPoints() {
 	for i, post := range posts {
 		utils.DB.Model(&post).Related(&posts[i].Points)
+	}
+}
+
+// only returns one level of comments
+func (posts Posts) FetchComments() {
+	for i, post := range posts {
+		comments := Posts{}
+		utils.DB.Select("*").Where("parent_post_id = ?", post.ID).Find(&comments)
+		posts[i].Posts = comments
 	}
 }
 

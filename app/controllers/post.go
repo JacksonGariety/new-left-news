@@ -15,6 +15,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	utils.DB.Raw("SELECT x.* FROM posts x JOIN (SELECT p.id, SUM(v.vote) AS points FROM posts p JOIN points v ON v.post_id = p.id GROUP BY p.id) y ON y.id = x.id WHERE x.parent_post_id = 0 ORDER BY (y.points - 1)/POW(((EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM x.created_at))/3600)+2, 1.5) DESC").Scan(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
+	posts.FetchComments()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
@@ -25,6 +26,7 @@ func Newest(w http.ResponseWriter, r *http.Request) {
 	utils.DB.Select("id, title, url, user_id, created_at").Where("content = ?", "").Order("created_at DESC").Limit(30).Find(&posts)
 	posts.FetchUsers()
 	posts.FetchPoints()
+	posts.FetchComments()
 	utils.Render(w, r, "index.html", &utils.Props{
 		"posts": posts,
 	})
@@ -38,7 +40,7 @@ func ShowPost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		utils.DB.Model(&post).Related(&post.User)
 		utils.DB.Model(&post).Related(&post.Points)
-		post.Posts = post.GetComments()
+		post.Posts = post.FetchAllComments()
 		utils.Render(w, r, "show_post.html", &utils.Props{
 			"post": &post,
 		})
@@ -99,7 +101,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	utils.DB.First(&post, id)
 	utils.DB.Model(&post).Related(&post.User)
 	utils.DB.Model(&post).Related(&post.Points)
-	post.Posts = post.GetComments()
+	post.Posts = post.FetchAllComments()
 
 	if validateCommentForm(form) == false {
 		utils.Render(w, r, "show_post.html", &utils.Props{

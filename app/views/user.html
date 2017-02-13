@@ -8,5 +8,21 @@
   You are an admin.
 {{ end }}
 
+<br/>
+<br/>
+
+{{ if (not (eq 0 (len .posts)))}}
+  Posts:
+  <ul>
+    {{ range $post := .posts }}
+      {{ if (not (eq 0 (len $post.Title)))}}
+        <li><a href="/post/{{ $post.ID }}">{{ $post.Title }}</a></li>
+      {{ end }}
+  {{ end }}
+  </ul>
+{{ else }}
+  This user has no posts.
+{{ end }}
+
 
 {{ end }}
